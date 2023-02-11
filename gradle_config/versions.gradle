@@ -13,4 +13,6 @@ ext.Versions = [
 	GSON             : "2.8.9",
 	COROUTINE        : "1.6.2",
 	LIFECYCLE        : "2.5.1",
+	FIREBASE_CONFIG  : "21.0.2",
+	FIREBASE_SERVICES: "4.3.10",
 ]

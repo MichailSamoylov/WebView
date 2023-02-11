@@ -7,4 +7,5 @@ ext.Plugins = [
 	KOTLIN_KAPT        : "kotlin-kapt",
 	KOTLIN             : "kotlin",
 	JAVA_LIBRARY       : "java-library",
+	FIREBASE_SERVICES  : "com.google.gms.google-services"
 ]

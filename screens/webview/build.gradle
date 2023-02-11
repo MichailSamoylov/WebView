@@ -1,9 +1,7 @@
-apply plugin:Plugins.ANDROID_APPLICATION
+apply plugin:Plugins.ANDROID_LIBRARY
 apply plugin:Plugins.KOTLIN_ANDROID
-apply plugin:Plugins.FIREBASE_SERVICES
 
-apply from:"$rootDir/gradle_config/application.gradle"
-
+apply from:"$rootDir/gradle_config/android_library.gradle"
 dependencies {
 	implementation Dependencies.KOTLIN_STANDARD_LIBRARY
 	implementation Dependencies.CORE
@@ -14,11 +12,4 @@ dependencies {
 	implementation Dependencies.CICERONE
 	implementation Dependencies.KOIN_CORE
 	implementation Dependencies.KOIN_ANDROID
-	implementation Dependencies.RETROFIT
-	implementation Dependencies.FIREBASE_CONFIG
-	implementation Dependencies.GSON
-
-	implementation project(':screens:error')
-	implementation project(':screens:stub')
-	implementation project(':screens:webview')
 }

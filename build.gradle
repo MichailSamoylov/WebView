@@ -9,6 +9,7 @@ buildscript {
 	dependencies {
 		classpath Dependencies.GRADLE
 		classpath Dependencies.KOTLIN
+		classpath Dependencies.FIREBASE_SERVICES
 	}
 }
 allprojects {

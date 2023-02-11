@@ -1,6 +1,6 @@
-package com.app.webview.di
+package com.app.webview.app.di
 
-import com.app.webview.navigation.buildCicerone
+import com.app.webview.app.navigation.buildCicerone
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
 import org.koin.dsl.module
