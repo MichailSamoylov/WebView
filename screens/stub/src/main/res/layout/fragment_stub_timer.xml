@@ -1,24 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/start_fragment"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:background="@color/black"
+	android:orientation="vertical"
 	tools:context=".ui.StubTimerFragment">
 
-	<TextView
-		android:layout_gravity="center"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="StubTimer"
-	/>
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-	<ProgressBar
-		android:visibility="gone"
-		android:id="@+id/progressBar"
-		android:layout_width="100dp"
-		android:layout_height="100dp"
-		android:layout_gravity="center"/>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
 
-</FrameLayout>
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginTop="@dimen/margin_48"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical"
+					android:textColor="@color/white"
+					android:text="@string/prep_text"/>
+
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/prep_value_text_layout"
+					android:layout_width="@dimen/size_200"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_marginStart="@dimen/margin_48"
+					android:background="@color/white">
+
+					<com.google.android.material.textfield.TextInputEditText
+						android:id="@+id/prep_value_text_edit"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:text="@string/start_time_input_value"
+						android:gravity="center"
+						android:inputType="time"/>
+
+				</com.google.android.material.textfield.TextInputLayout>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginTop="@dimen/margin_96"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical"
+					android:textColor="@color/white"
+					android:text="@string/work_text"/>
+
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/work_value_text_layout"
+					android:layout_width="@dimen/size_200"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_marginStart="@dimen/margin_48"
+					android:background="@color/white">
+
+					<com.google.android.material.textfield.TextInputEditText
+						android:id="@+id/work_value_text_edit"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:text="@string/start_time_input_value"
+						android:gravity="center"
+						android:inputType="time"/>
+
+				</com.google.android.material.textfield.TextInputLayout>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginTop="@dimen/margin_96"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical"
+					android:textColor="@color/white"
+					android:text="@string/rest_text"/>
+
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/rest_value_text_layout"
+					android:layout_width="@dimen/size_200"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_marginStart="@dimen/margin_48"
+					android:background="@color/white">
+
+					<com.google.android.material.textfield.TextInputEditText
+						android:id="@+id/rest_value_text_edit"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:text="@string/start_time_input_value"
+						android:gravity="center"
+						android:inputType="time"/>
+
+				</com.google.android.material.textfield.TextInputLayout>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginTop="@dimen/margin_96"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical"
+					android:textColor="@color/white"
+					android:text="@string/rounds_text"/>
+
+				<com.google.android.material.textfield.TextInputLayout
+					android:id="@+id/rounds_value_text_layout"
+					android:layout_width="@dimen/size_200"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:layout_marginStart="@dimen/margin_48"
+					android:background="@color/white">
+
+					<com.google.android.material.textfield.TextInputEditText
+						android:id="@+id/rounds_value_text_edit"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:text="@string/start_input_value"
+						android:gravity="center"
+						android:inputType="number"/>
+
+				</com.google.android.material.textfield.TextInputLayout>
+
+			</LinearLayout>
+
+			<TextView
+
+				android:id="@+id/amount_work_time_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginTop="@dimen/margin_48"
+				android:textColor="@color/white"
+				android:text="@string/start_time_input_value"
+			/>
+
+			<Button
+				android:id="@+id/button"
+				android:layout_width="@dimen/size_200"
+				android:layout_height="@dimen/size_64"
+				android:layout_gravity="center"
+				android:layout_marginBottom="@dimen/margin_48"
+				android:layout_marginTop="@dimen/margin_48"
+				android:text="@string/button_text"
+				android:textColor="@color/black"
+			/>
+
+		</LinearLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
