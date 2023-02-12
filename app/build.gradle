@@ -1,8 +1,8 @@
-apply plugin:Plugins.ANDROID_APPLICATION
-apply plugin:Plugins.KOTLIN_ANDROID
-apply plugin:Plugins.FIREBASE_SERVICES
+apply plugin: Plugins.ANDROID_APPLICATION
+apply plugin: Plugins.KOTLIN_ANDROID
+apply plugin: Plugins.FIREBASE_SERVICES
 
-apply from:"$rootDir/gradle_config/application.gradle"
+apply from: "$rootDir/gradle_config/application.gradle"
 
 dependencies {
 	implementation Dependencies.KOTLIN_STANDARD_LIBRARY
@@ -19,6 +19,8 @@ dependencies {
 	implementation Dependencies.GSON
 
 	implementation project(':screens:error')
-	implementation project(':screens:stub')
+	implementation project(':screens:timersettings')
 	implementation project(':screens:webview')
+	implementation project(':screens:timerwork')
+	implementation project(':components')
 }

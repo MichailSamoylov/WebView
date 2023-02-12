@@ -16,6 +16,7 @@
 		<activity
 			android:name="com.app.webview.activity.ui.MainActivity"
 			android:exported="true"
+			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:usesCleartextTraffic="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>

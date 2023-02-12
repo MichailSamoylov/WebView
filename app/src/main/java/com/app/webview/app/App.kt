@@ -4,7 +4,8 @@ import android.app.Application
 import com.app.webview.activity.di.mainActivityModule
 import com.app.webview.app.di.ciceroneModule
 import com.app.webview.app.di.navigationModule
-import com.app.webview.screens.stub.di.stubTimerModule
+import com.app.webview.screens.timersettings.di.timerSettingsModule
+import com.app.webview.screens.timerwork.di.timerWorkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -22,7 +23,8 @@ class App : Application() {
 				ciceroneModule,
 				navigationModule,
 				mainActivityModule,
-				stubTimerModule,
+				timerSettingsModule,
+				timerWorkModule,
 			)
 		}
 	}

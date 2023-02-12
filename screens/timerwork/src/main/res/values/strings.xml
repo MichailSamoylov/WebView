@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="rounds_text_prefix">ROUNDS : </string>
+	<string name="displayed_time_rest">REST</string>
+	<string name="displayed_time_pred">PRED</string>
+	<string name="displayed_time_work">WORK</string>
+	<string name="button_resume_text">RESUME</string>
+	<string name="button_stop_text">STOP</string>
+	<string name="button_pause_text">PAUSE</string>
+	<string name="start_input_value">00:00:00</string>
+</resources>
