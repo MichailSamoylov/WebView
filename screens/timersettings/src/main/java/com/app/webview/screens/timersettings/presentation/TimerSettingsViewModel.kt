@@ -3,13 +3,16 @@ package com.app.webview.screens.timersettings.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.app.webview.components.stub.domain.TimerData
+import com.app.webview.components.stub.timer.domain.TimerData
+import com.app.webview.components.stub.trainings.doamin.entity.TrainingEntity
+import com.app.webview.components.stub.trainings.doamin.usecase.GetUniqueNamePrefixUseCase
 import com.app.webview.components.timeconverter.HOUR
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TimerSettingsViewModel(
-	private val router: TimerSettingsRouter
+	private val router: TimerSettingsRouter,
+	private val getUniqueNamePrefixUseCase: GetUniqueNamePrefixUseCase
 ) : ViewModel() {
 
 	private val _state = MutableLiveData<TimerSettingsState>()
@@ -19,13 +22,23 @@ class TimerSettingsViewModel(
 		_state.value = TimerSettingsState.Content(0L, 0L, 0L, 0)
 	}
 
+	private lateinit var trainingEntity: TrainingEntity
 	private val dataFormat = SimpleDateFormat("mm:ss", Locale("ru"))
+
+	fun onSelectedTraining(trainingEntity: TrainingEntity?) {
+		if (trainingEntity != null) {
+			this.trainingEntity = trainingEntity
+			with(trainingEntity) {
+				_state.value = TimerSettingsState.Content(timerData.pred, timerData.work, timerData.rest, timerData.rounds)
+			}
+		}
+	}
 
 	fun setPredPeriod(pred: String) {
 		val currentState = _state.value as TimerSettingsState.Content
 		if (pred.length >= 5) {
 			tryParseTime(pred)?.let {
-				val time = getLongTime(it)
+				val time = getHourOrTime(it)
 				if (currentState.pred != time)
 					_state.value = currentState.copy(pred = time)
 			}
@@ -36,7 +49,7 @@ class TimerSettingsViewModel(
 		val currentState = _state.value as TimerSettingsState.Content
 		if (work.length >= 5) {
 			tryParseTime(work)?.let {
-				val time = getLongTime(it)
+				val time = getHourOrTime(it)
 				if (currentState.work != time)
 					_state.value = currentState.copy(work = time)
 			}
@@ -47,14 +60,14 @@ class TimerSettingsViewModel(
 		val currentState = _state.value as TimerSettingsState.Content
 		if (rest.length >= 5) {
 			tryParseTime(rest)?.let {
-				val time = getLongTime(it)
+				val time = getHourOrTime(it)
 				if (currentState.rest != time)
 					_state.value = currentState.copy(rest = time)
 			}
 		}
 	}
 
-	private fun getLongTime(time: Long): Long {
+	private fun getHourOrTime(time: Long): Long {
 		return if (time > HOUR) {
 			HOUR
 		} else {
@@ -83,14 +96,34 @@ class TimerSettingsViewModel(
 	fun startWorking() {
 		val currentState = _state.value as TimerSettingsState.Content
 		val workTime = (currentState.pred + currentState.work + currentState.rest) * currentState.rounds
-		if (workTime > 0)
-			router.navigateToWorkScreen(
-				TimerData(
-					pred = currentState.pred,
-					work = currentState.work,
-					rest = currentState.rest,
-					rounds = currentState.rounds
+		if (workTime > 0) {
+			if (::trainingEntity.isInitialized) {
+				val newTrainingEntity = trainingEntity.copy(
+					timerData = TimerData(
+						pred = currentState.pred,
+						work = currentState.work,
+						rest = currentState.rest,
+						rounds = currentState.rounds
+					)
 				)
-			)
+				router.navigateToWorkScreen(newTrainingEntity)
+			} else {
+				val newTrainingEntity = TrainingEntity(
+					name = "preset +${getUniqueNamePrefixUseCase()}",
+					timerData = TimerData(
+						pred = currentState.pred,
+						work = currentState.work,
+						rest = currentState.rest,
+						rounds = currentState.rounds
+					),
+					setOf()
+				)
+				router.navigateToWorkScreen(newTrainingEntity)
+			}
+		}
+	}
+
+	fun navigateToTrainingsScreen() {
+		router.navigateToTrainingsScreen()
 	}
 }

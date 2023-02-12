@@ -1,6 +1,6 @@
 package com.app.webview.screens.timerwork.presentation
 
-import com.app.webview.components.stub.domain.TimerData
+import com.app.webview.components.stub.timer.domain.TimerData
 
 sealed class TimerWorkState {
 

@@ -22,5 +22,6 @@ dependencies {
 	implementation project(':screens:timersettings')
 	implementation project(':screens:webview')
 	implementation project(':screens:timerwork')
+	implementation project(':screens:trainings')
 	implementation project(':components')
 }

@@ -8,16 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.app.webview.activity.domain.entity.ConfigEntity
 import com.app.webview.activity.domain.usecase.GetConfigUseCase
 import com.app.webview.activity.domain.usecase.SaveConfigUseCase
-import com.app.webview.screens.error.BuildConfig
 import com.app.webview.screens.error.getErrorScreen
-import com.app.webview.screens.stub.getStubTimerScreen
+import com.app.webview.screens.timersettings.getStubTimerScreen
 import com.app.webview.screens.webview.getWebViewScreen
 import com.github.terrakok.cicerone.Router
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.Locale
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
@@ -37,24 +34,35 @@ class MainActivityViewModel(
 	private val gson = Gson()
 
 	fun checkConfig() {
-		if (getConfigUseCase().url.isEmpty()) {
-			reloadConfig()
-		} else {
-			if (checkInternetConnection()) {
-				router.newRootScreen(getWebViewScreen())
+		if (checkInternetConnection()) {
+			val config = getConfigUseCase()
+			if (config.url.isEmpty()) {
+				reloadConfig()
 			} else {
-				router.newRootScreen(getErrorScreen())
+				viewModelScope.launch {
+					remoteConfig.fetchAndActivate()
+					val jsonConfig = remoteConfig.getString(JSON_CONFIG_KEY)
+					val updateConfig = gson.fromJson(jsonConfig, object : TypeToken<ConfigEntity>() {}.type) as? ConfigEntity
+					if (updateConfig != null)
+						saveConfigUseCase(updateConfig)
+				}
+				router.newRootScreen(getWebViewScreen(config.url))
 			}
+		} else {
+			router.newRootScreen(getErrorScreen())
 		}
 	}
 
 	private fun checkInternetConnection(): Boolean =
-		connectivityManager.activeNetwork != null
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			connectivityManager.activeNetwork != null
+		} else {
+			connectivityManager.activeNetworkInfo != null
+		}
 
 	private fun reloadConfig() {
 		viewModelScope.launch {
 			remoteConfig.fetchAndActivate()
-			delay(2000)
 			val jsonConfig = remoteConfig.getString(JSON_CONFIG_KEY)
 			val config = gson.fromJson(jsonConfig, object : TypeToken<ConfigEntity>() {}.type) as? ConfigEntity
 			if (config != null)
@@ -67,46 +75,42 @@ class MainActivityViewModel(
 	private fun onNotEmptyConfig(config: ConfigEntity) {
 		saveConfigUseCase(config)
 
-		if (config.url.isEmpty() || deviceIsEmulator() || deviceDontHaveSIMCard()) {
+		if (deviceIsEmulator() || deviceIsGoogleProduction() || deviceWithoutSIMCard()) {
 			router.newRootScreen(getStubTimerScreen())
 		} else {
-			router.newRootScreen(getWebViewScreen())
+			router.newRootScreen(getWebViewScreen(config.url))
 		}
 	}
 
-	private fun deviceIsEmulator(): Boolean {
-		if (BuildConfig.DEBUG) return false
+	private fun deviceIsGoogleProduction(): Boolean {
 		val phoneModel = Build.MODEL
 		val buildProduct = Build.PRODUCT
-		val buildHardware = Build.HARDWARE
 
-		var result = (Build.FINGERPRINT.startsWith("generic")
-			|| phoneModel.contains("google_sdk")
-			|| phoneModel.lowercase(Locale.getDefault()).contains("droid4x")
-			|| phoneModel.contains("Emulator")
-			|| phoneModel.contains("Android SDK built for x86")
-			|| Build.MANUFACTURER.contains("Genymotion")
-			|| buildHardware == "goldfish"
+		return phoneModel.contains("google_sdk")
 			|| Build.BRAND.contains("google")
-			|| buildHardware == "vbox86"
-			|| buildProduct == "sdk"
 			|| buildProduct == "google_sdk"
-			|| buildProduct == "sdk_x86"
-			|| buildProduct == "vbox86p"
-			|| Build.BOARD.lowercase(Locale.getDefault()).contains("nox")
-			|| Build.BOOTLOADER.lowercase(Locale.getDefault()).contains("nox")
-			|| buildHardware.lowercase(Locale.getDefault()).contains("nox")
-			|| buildProduct.lowercase(Locale.getDefault()).contains("nox"))
-		if (result) return true
-		result = result or (Build.BRAND.startsWith("generic") &&
-			Build.DEVICE.startsWith("generic"))
-		if (result) return true
-		result = result or ("google_sdk" == buildProduct)
-		return result
-
 	}
 
-	private fun deviceDontHaveSIMCard(): Boolean {
+	private fun deviceIsEmulator(): Boolean {
+		return (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+			|| Build.FINGERPRINT.startsWith("generic")
+			|| Build.FINGERPRINT.startsWith("unknown")
+			|| Build.HARDWARE.contains("goldfish")
+			|| Build.MODEL.contains("google_sdk")
+			|| Build.MODEL.contains("Emulator")
+			|| Build.MODEL.contains("Android SDK built for x86")
+			|| Build.MANUFACTURER.contains("Genymotion")
+			|| Build.PRODUCT.contains("sdk_google")
+			|| Build.PRODUCT.contains("google_sdk")
+			|| Build.PRODUCT.contains("sdk")
+			|| Build.PRODUCT.contains("sdk_x86")
+			|| Build.PRODUCT.contains("sdk_gphone64_arm64")
+			|| Build.PRODUCT.contains("vbox86p")
+			|| Build.PRODUCT.contains("emulator")
+			|| Build.PRODUCT.contains("simulator");
+	}
+
+	private fun deviceWithoutSIMCard(): Boolean {
 		return telephonyManager.simState == TelephonyManager.SIM_STATE_ABSENT
 	}
 }

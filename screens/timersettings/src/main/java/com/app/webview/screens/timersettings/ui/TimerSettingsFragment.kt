@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import com.app.webview.components.fragment.setResultListener
+import com.app.webview.components.stub.trainings.contracts.TrainingsResultContract
 import com.app.webview.components.timeconverter.DAY
 import com.app.webview.components.timeconverter.HOUR
 import com.app.webview.components.timeconverter.convertTimeDayToString
@@ -35,6 +37,9 @@ class TimerSettingsFragment : Fragment(R.layout.fragment_timer_settings) {
 		super.onViewCreated(view, savedInstanceState)
 		setObservers()
 		setListeners()
+		setResultListener(TrainingsResultContract) {
+			viewModel.onSelectedTraining(it)
+		}
 	}
 
 	private fun setListeners() {
@@ -43,6 +48,7 @@ class TimerSettingsFragment : Fragment(R.layout.fragment_timer_settings) {
 			workValueTextEdit.doAfterTextChanged { text -> viewModel.setWorkPeriod(text.toString()) }
 			restValueTextEdit.doAfterTextChanged { text -> viewModel.setRestPeriod(text.toString()) }
 			roundsValueTextEdit.doAfterTextChanged { text -> viewModel.setRoundsCount(text.toString()) }
+			buttonTrainings.setOnClickListener { viewModel.navigateToTrainingsScreen() }
 			button.setOnClickListener { viewModel.startWorking() }
 		}
 	}

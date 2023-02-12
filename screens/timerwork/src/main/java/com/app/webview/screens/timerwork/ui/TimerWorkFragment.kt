@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.app.webview.components.stub.domain.TimerData
+import com.app.webview.components.stub.trainings.doamin.entity.TrainingEntity
 import com.app.webview.components.timeconverter.convertTimeHourToString
 import com.app.webview.screens.timerwork.R
 import com.app.webview.screens.timerwork.databinding.FragmentTimerWorkBinding
@@ -27,10 +27,10 @@ class TimerWorkFragment : Fragment(R.layout.fragment_timer_work) {
 
 	companion object {
 
-		fun newInstance(workTime: TimerData) =
+		fun newInstance(trainingDate: TrainingEntity) =
 			TimerWorkFragment().apply {
 				val bundle = Bundle()
-				bundle.workTime = workTime
+				bundle.workTime = trainingDate
 				arguments = bundle
 			}
 	}

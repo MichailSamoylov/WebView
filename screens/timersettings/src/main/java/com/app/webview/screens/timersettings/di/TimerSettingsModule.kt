@@ -7,7 +7,8 @@ import org.koin.dsl.module
 val timerSettingsModule = module {
 	viewModel {
 		TimerSettingsViewModel(
-			router = get()
+			router = get(),
+			getUniqueNamePrefixUseCase = get()
 		)
 	}
 }

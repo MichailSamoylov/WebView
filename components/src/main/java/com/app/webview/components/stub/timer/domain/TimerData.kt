@@ -1,4 +1,4 @@
-package com.app.webview.components.stub.domain
+package com.app.webview.components.stub.timer.domain
 
 data class TimerData(
 	val pred: Long,

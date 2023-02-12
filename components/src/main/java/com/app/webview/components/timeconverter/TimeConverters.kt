@@ -11,4 +11,4 @@ fun convertTimeHourToString(date: Long): String =
 	SimpleDateFormat("mm:ss", Locale("ru")).format(date)
 
 fun convertTimeDayToString(date: Long): String =
-	SimpleDateFormat("kk:mm:ss", Locale("ru")).format(date)
+	SimpleDateFormat("HH:mm:ss, aa", Locale("ru")).format(date)

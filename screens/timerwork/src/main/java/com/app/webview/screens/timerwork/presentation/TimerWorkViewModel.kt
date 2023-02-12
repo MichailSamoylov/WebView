@@ -4,13 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.webview.components.stub.domain.TimerData
-import kotlinx.coroutines.cancel
+import com.app.webview.components.stub.timer.domain.TimerData
+import com.app.webview.components.stub.trainings.doamin.entity.TrainingEntity
+import com.app.webview.components.stub.trainings.doamin.usecase.SaveTrainingUseCase
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TimerWorkViewModel(
+	private val trainingDate: TrainingEntity,
 	private val workTime: TimerData,
+	private val saveTrainingUseCase: SaveTrainingUseCase,
 	private val router: TimerWorkRouter,
 ) : ViewModel() {
 
@@ -110,6 +116,17 @@ class TimerWorkViewModel(
 	}
 
 	fun setTimerStateStop() {
+		val currentDate = Calendar.getInstance().time
+		val dateFormat: DateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+		val dateText = dateFormat.format(currentDate)
+		val timeFormat: DateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+		val timeText = timeFormat.format(currentDate)
+
+		val datesOfUsing = trainingDate.listOfUsing.toMutableSet()
+		datesOfUsing.add("$dateText $timeText")
+
+		val newTrainingData = trainingDate.copy(listOfUsing = datesOfUsing)
+		saveTrainingUseCase(newTrainingData)
 		router.navigateBack()
 	}
 }
