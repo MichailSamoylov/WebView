@@ -4,7 +4,6 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.telephony.TelephonyManager
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.app.webview.activity.domain.entity.ConfigEntity
 import com.app.webview.activity.domain.usecase.GetConfigUseCase
 import com.app.webview.activity.domain.usecase.SaveConfigUseCase
@@ -15,7 +14,6 @@ import com.github.terrakok.cicerone.Router
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
 	private val router: Router,
@@ -36,16 +34,11 @@ class MainActivityViewModel(
 	fun checkConfig() {
 		if (checkInternetConnection()) {
 			val config = getConfigUseCase()
+			remoteConfig.reset()
 			if (config.url.isEmpty()) {
-				reloadConfig()
+				reloadConfigAndNavigate()
 			} else {
-				viewModelScope.launch {
-					remoteConfig.fetchAndActivate()
-					val jsonConfig = remoteConfig.getString(JSON_CONFIG_KEY)
-					val updateConfig = gson.fromJson(jsonConfig, object : TypeToken<ConfigEntity>() {}.type) as? ConfigEntity
-					if (updateConfig != null)
-						saveConfigUseCase(updateConfig)
-				}
+				reloadConfig()
 				router.newRootScreen(getWebViewScreen(config.url))
 			}
 		} else {
@@ -61,10 +54,23 @@ class MainActivityViewModel(
 		}
 
 	private fun reloadConfig() {
-		viewModelScope.launch {
-			remoteConfig.fetchAndActivate()
+		remoteConfig.fetchAndActivate().addOnCompleteListener {
 			val jsonConfig = remoteConfig.getString(JSON_CONFIG_KEY)
 			val config = gson.fromJson(jsonConfig, object : TypeToken<ConfigEntity>() {}.type) as? ConfigEntity
+			if (config != null) {
+				saveConfigUseCase(config)
+			}
+		}
+	}
+
+	private fun reloadConfigAndNavigate() {
+		remoteConfig.fetchAndActivate().addOnCompleteListener {
+			val jsonConfig = remoteConfig.getString(JSON_CONFIG_KEY)
+			val config = gson.fromJson(jsonConfig, object : TypeToken<ConfigEntity>() {}.type) as? ConfigEntity
+			if (config != null) {
+				saveConfigUseCase(config)
+			}
+
 			if (config != null)
 				onNotEmptyConfig(config)
 			else
@@ -73,9 +79,7 @@ class MainActivityViewModel(
 	}
 
 	private fun onNotEmptyConfig(config: ConfigEntity) {
-		saveConfigUseCase(config)
-
-		if (deviceIsEmulator() || deviceIsGoogleProduction() || deviceWithoutSIMCard()) {
+		if (config.url.isEmpty() || deviceIsEmulator() || deviceIsGoogleProduction() || deviceWithoutSIMCard()) {
 			router.newRootScreen(getStubTimerScreen())
 		} else {
 			router.newRootScreen(getWebViewScreen(config.url))

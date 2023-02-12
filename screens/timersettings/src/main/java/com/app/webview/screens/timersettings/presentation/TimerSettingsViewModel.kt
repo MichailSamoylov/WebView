@@ -8,7 +8,8 @@ import com.app.webview.components.stub.trainings.doamin.entity.TrainingEntity
 import com.app.webview.components.stub.trainings.doamin.usecase.GetUniqueNamePrefixUseCase
 import com.app.webview.components.timeconverter.HOUR
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
+import kotlin.math.absoluteValue
 
 class TimerSettingsViewModel(
 	private val router: TimerSettingsRouter,
@@ -23,7 +24,7 @@ class TimerSettingsViewModel(
 	}
 
 	private lateinit var trainingEntity: TrainingEntity
-	private val dataFormat = SimpleDateFormat("mm:ss", Locale("ru"))
+	private val dataFormat = SimpleDateFormat("mm:ss", Locale.ENGLISH)
 
 	fun onSelectedTraining(trainingEntity: TrainingEntity?) {
 		if (trainingEntity != null) {
@@ -78,7 +79,12 @@ class TimerSettingsViewModel(
 	private fun tryParseTime(time: String): Long? {
 		var result: Long? = null
 		try {
-			result = dataFormat.parse(time)?.time
+			val parseResult = dataFormat.parse(time)?.time ?: 0
+			result = if (parseResult < 0L) {
+				parseResult + 25200000L
+			} else {
+				parseResult
+			}
 		} catch (_: java.lang.Exception) {
 		}
 		return result
@@ -96,7 +102,7 @@ class TimerSettingsViewModel(
 	fun startWorking() {
 		val currentState = _state.value as TimerSettingsState.Content
 		val workTime = (currentState.pred + currentState.work + currentState.rest) * currentState.rounds
-		if (workTime > 0) {
+		if (workTime.absoluteValue > 0) {
 			if (::trainingEntity.isInitialized) {
 				val newTrainingEntity = trainingEntity.copy(
 					timerData = TimerData(

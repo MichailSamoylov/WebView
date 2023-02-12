@@ -1,5 +1,5 @@
 ext.Configs = [
-	APPLICATION_ID    : "com.app.mviarch",
+	APPLICATION_ID    : "com.app.webview",
 
 	BUILD_TOOL_VERSION: "30.0.0",
 
