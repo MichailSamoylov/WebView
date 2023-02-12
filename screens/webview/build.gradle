@@ -12,4 +12,6 @@ dependencies {
 	implementation Dependencies.CICERONE
 	implementation Dependencies.KOIN_CORE
 	implementation Dependencies.KOIN_ANDROID
+
+	implementation project(':components')
 }
